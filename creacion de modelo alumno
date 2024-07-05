@@ -1,0 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+
+public class Alumno
+{
+    public int Id { get; set; }
+
+    [Required(ErrorMessage = "El nombre del alumno es requerido.")]
+    public string Nombre { get; set; }
+
+    [Required(ErrorMessage = "El apellido del alumno es requerido.")]
+    public string Apellido { get; set; }
+
+    [Required(ErrorMessage = "El curso del alumno es requerido.")]
+    public string Curso { get; set; }
+}
