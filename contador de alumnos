@@ -1,0 +1,139 @@
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+public class AlumnosController : Controller
+{
+    private readonly ApplicationDbContext _context;
+
+    public AlumnosController(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    // GET: Alumnos
+    public IActionResult Index()
+    {
+        var alumnos = _context.Alumnos.ToList();
+        return View(alumnos);
+    }
+
+    // GET: Alumnos/Details/5
+    public IActionResult Details(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var alumno = _context.Alumnos.FirstOrDefault(m => m.Id == id);
+        if (alumno == null)
+        {
+            return NotFound();
+        }
+
+        return View(alumno);
+    }
+
+    // GET: Alumnos/Create
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    // POST: Alumnos/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create([Bind("Id,Nombre,Apellido,Curso")] Alumno alumno)
+    {
+        if (ModelState.IsValid)
+        {
+            _context.Add(alumno);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index));
+        }
+        return View(alumno);
+    }
+
+    // GET: Alumnos/Edit/5
+    public IActionResult Edit(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var alumno = _context.Alumnos.Find(id);
+        if (alumno == null)
+        {
+            return NotFound();
+        }
+        return View(alumno);
+    }
+
+    // POST: Alumnos/Edit/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Edit(int id, [Bind("Id,Nombre,Apellido,Curso")] Alumno alumno)
+    {
+        if (id != alumno.Id)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                _context.Update(alumno);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AlumnoExists(alumno.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        return View(alumno);
+    }
+
+    // GET: Alumnos/Delete/5
+    public IActionResult Delete(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var alumno = _context.Alumnos.FirstOrDefault(m => m.Id == id);
+        if (alumno == null)
+        {
+            return NotFound();
+        }
+
+        return View(alumno);
+    }
+
+    // POST: Alumnos/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public IActionResult DeleteConfirmed(int id)
+    {
+        var alumno = _context.Alumnos.Find(id);
+        _context.Alumnos.Remove(alumno);
+        _context.SaveChanges();
+        return RedirectToAction(nameof(Index));
+    }
+
+    private bool AlumnoExists(int id)
+    {
+        return _context.Alumnos.Any(e => e.Id == id);
+    }
+}
